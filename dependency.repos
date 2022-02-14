@@ -1,0 +1,5 @@
+repositories:
+  neubility-inc/autonomy-ros2-message:
+    type: git
+    url: https://github.com/neubility-inc/autonomy-ros2-message.git
+    version: main
