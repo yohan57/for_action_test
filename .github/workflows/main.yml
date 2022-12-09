@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  pull_request_target
+    
+env:
+  BASE_BRANCH: ${{ github.base_ref }}
+  HEAD_BRANCH: ${{ github.head_ref }}
+  PACKAGES: QC_manager
+
+jobs:
+  Check_Validation:
+    runs-on: [self-hosted, linkxavier]
+    outputs:
+      validation: ${{ steps.check_validation.outputs.validation }}
+      sourcing_branch: ${{ steps.check_validation.outputs.sourcing_branch }}
+    steps:
+      - name: Start
+        run: |
+          echo "Start"
+          echo "Pull Request Created : From [${{ env.HEAD_BRANCH }}] To [${{ env.BASE_BRANCH }}]"
+      - name: Check validation of the pull request
+        id: check_validation
+        run: |
+          echo "Check Start"
+          if [ ${{ env.BASE_BRANCH }} == "main" ]; then
+            if [ ${{ env.HEAD_BRANCH }} == "stable" ] || [[ ${{ env.HEAD_BRANCH }} == "hotfix"* ]]; then
+              echo "::set-output name=validation::true"
+              echo "::set-output name=sourcing_branch::${{ env.HEAD_BRANCH }}"
+            else
+              echo "::set-output name=validation::false"
+            fi
+          elif [ ${{ env.BASE_BRANCH }} == "stable" ]; then
+            if [ ${{ env.HEAD_BRANCH }} == "unstable" ] || [[ ${{ env.HEAD_BRANCH }} == "hotfix"* ]]; then
+              echo "::set-output name=validation::true"
+              echo "::set-output name=sourcing_branch::${{ env.HEAD_BRANCH }}"
+            else
+              echo "::set-output name=validation::false"
+            fi
+          elif [ ${{ env.BASE_BRANCH }} == "unstable" ]; then
+            if [ ${{ env.HEAD_BRANCH }} == "develop" ] || [[ ${{ env.HEAD_BRANCH }} == "hotfix"* ]]; then
+              echo "::set-output name=validation::true"
+              echo "::set-output name=sourcing_branch::${{ env.HEAD_BRANCH }}"
+            else
+              echo "::set-output name=validation::false"
+            fi
+          elif [ ${{ env.BASE_BRANCH }} == "develop" ]; then
+            if [[ ${{ env.HEAD_BRANCH }} == "feature"* ]] || [[ ${{ env.HEAD_BRANCH }} == "hotfix"* ]]; then
+              echo "::set-output name=validation::true"
+              echo "::set-output name=sourcing_branch::${{ env.HEAD_BRANCH }}"
+            else
+              echo "::set-output name=validation::false"
+            fi
+          elif [[ ${{ env.BASE_BRANCH }} == "feature"* ]]; then
+            if [[ ${{ env.HEAD_BRANCH }} == "feature"* ]]; then
+              echo "::set-output name=validation::pass"
+            else
+              echo "::set-output name=validation::false"
+            fi
+          else
+            echo "::set-output name=validation::false"
+          fi
+
+  Pass:
+    needs: Check_Validation
+    runs-on: [self-hosted, linkxavier]
+    if: needs.Check_Validation.outputs.validation == 'pass'
+    steps:
+      - name: Notice
+        run: echo "Don't need to execute the build test."
+  
+  Close:
+    needs: Check_Validation
+    runs-on: [self-hosted, linkxavier]
+    if: needs.Check_Validation.outputs.validation == 'false'
+    steps:
+      - name: Notice
+        run: echo "This pull request is not valid."
+      - name: Close
+        uses: superbrothers/close-pull-request@v3
+        with:
+          comment: "This pull request is not valid."
