@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  pull_request_target
+    
+env:
+  BASE_BRANCH: ${{ github.base_ref }}
+  HEAD_BRANCH: ${{ github.head_ref }}
+
+jobs:
+  Check_Validation:
+    runs-on: [self-hosted]
+    steps:
+      - name: Start
+        run: |
+          echo "Hello PR develop"
+          echo "Pull Request Created : From [${{ env.HEAD_BRANCH }}] To [${{ env.BASE_BRANCH }}]"
