@@ -10,10 +10,5 @@ jobs:
     steps:
       - name: Start
         run: |
-          echo "Start"
+          echo "Hello Push"
           echo "Push Created : To [${{ github.ref_name }}]"
-      - name: Pull Codes
-        run: |
-          cd ~/test_ws/test_action/${{ github.event.repository.name }}
-          git checkout ${{ github.ref_name }}
-          git pull
