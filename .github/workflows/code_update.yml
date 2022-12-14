@@ -1,0 +1,14 @@
+name: UpdateCode
+
+on:
+  push:
+    branches: [main, develop, unstable, stable]
+
+jobs:
+  Update_Codes:
+    runs-on: [self-hosted]
+    steps:
+      - name: Start
+        run: |
+          echo "Hello Push develop"
+          echo "Push Created : To [${{ github.ref_name }}]"
