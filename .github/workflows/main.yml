@@ -121,7 +121,7 @@ jobs:
           done
       - name: Build
         run: |
-          cd ~/${{ env.BASE_BRANCH }}_ws
+          cd ~/cali_ws
           colcon build --packages-up-to ${{ env.PACKAGES }}
       - name: Reject
         if: ${{ failure() }}
