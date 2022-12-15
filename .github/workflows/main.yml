@@ -96,10 +96,6 @@ jobs:
         run: |
           cd ~/cali_ws
           cd src/autonomy-QC-manager
-          git checkout ${{ env.BASE_BRANCH }}
-          git pull
-          git checkout ${{ needs.Check_Validation.outputs.sourcing_branch }}
-          git pull origin ${{ needs.Check_Validation.outputs.sourcing_branch }}
       - name: Back up
         run: |
           cd ~
