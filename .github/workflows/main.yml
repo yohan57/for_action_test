@@ -95,7 +95,7 @@ jobs:
       - name: Pull codes
         run: |
           cd ~/cali_ws
-          cd src/${{ github.event.repository.name }}
+          cd src/autonomy-QC-manager
           git checkout ${{ env.BASE_BRANCH }}
           git pull
           git checkout ${{ needs.Check_Validation.outputs.sourcing_branch }}
@@ -109,7 +109,7 @@ jobs:
             mkdir build
             mkdir install
           fi
-          cd ~/${{ env.BASE_BRANCH }}_ws
+          cd ~/cali_ws
           packages=($(echo ${{ env.PACKAGES }} | tr " " "/"))
           for package in $packages; do
             if [ -d build/${package} ]; then
