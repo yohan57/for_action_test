@@ -149,6 +149,3 @@ jobs:
         run: |
           cd ~
           rm -rf back_up
-          cd ~/${{ env.BASE_BRANCH }}_ws
-          cd src/${{ github.event.repository.name }}
-          git checkout ${{ env.BASE_BRANCH }}
