@@ -10,7 +10,7 @@ env:
 
 jobs:
   Check_Validation:
-    runs-on: [self-hosted, linkxavier]
+    runs-on: [self-hosted]
     outputs:
       validation: ${{ steps.check_validation.outputs.validation }}
       sourcing_branch: ${{ steps.check_validation.outputs.sourcing_branch }}
@@ -63,7 +63,7 @@ jobs:
   
   Pass:
     needs: Check_Validation
-    runs-on: [self-hosted, linkxavier]
+    runs-on: [self-hosted]
     if: needs.Check_Validation.outputs.validation == 'pass'
     steps:
       - name: Notice
@@ -71,7 +71,7 @@ jobs:
   
   Close:
     needs: Check_Validation
-    runs-on: [self-hosted, linkxavier]
+    runs-on: [self-hosted]
     if: needs.Check_Validation.outputs.validation == 'false'
     steps:
       - name: Notice
@@ -83,7 +83,7 @@ jobs:
 
   Build-Test:
     needs: Check_Validation
-    runs-on: [self-hosted, linkxavier]
+    runs-on: [self-hosted]
     if: needs.Check_Validation.outputs.validation == 'true'
     steps:
       - name: Start
